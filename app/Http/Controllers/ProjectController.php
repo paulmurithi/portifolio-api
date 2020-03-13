@@ -12,7 +12,7 @@ use App\Http\Requests\storeProject;
 class ProjectController extends Controller
 {
     public function __construct(){
-        // $this->middleware('auth')->except(['index','show']);
+        $this->middleware('auth:api')->except(['index','show']);
     }
 
 
@@ -23,7 +23,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return new ProjectCollection(Project::all());
+        return new ProjectCollection(Project::paginate());
     }
 
     /**
@@ -34,8 +34,13 @@ class ProjectController extends Controller
      */
     public function store(storeProject $request)
     {
-        $validated = $request->validated();
-        return new ProjectResource($validated);
+        $project =new Project;
+        $project->title = $request->title;
+        $project->image = $request->image;
+        $project->github = $request->github;
+        $project->website = $request->website;
+        $project->save();
+        return new ProjectResource($project);
     }
 
     /**
@@ -56,11 +61,14 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(storeProject $request, $id)
     {
         $project = Project::findOrFail($id);
-        $project->update($request->validate());
-        $project->refresh();
+        $project->title = $request->title;
+        $project->image = $request->image;
+        $project->github = $request->github;
+        $project->website = $request->website;
+        $project->save();
         return new ProjectResource($project);
     }
 
@@ -72,11 +80,8 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        // delete a project instance using query
-        // $project = Project::findOrFail($id);
-        // $project->delete();
+        $project = Project::findOrFail($id);
+        $project->delete();
 
-        // using destroy
-        Project::destroy($id);
     }
 }

@@ -12,7 +12,7 @@ use App\Http\Requests\storeTestimonial;
 class TestimonialController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth')->except(['index','show']);
+        $this->middleware('auth:api')->except(['index','show']);
     }
 
     /**
@@ -22,7 +22,7 @@ class TestimonialController extends Controller
      */
     public function index()
     {
-        return new TestimonialCollection(Testimonial::all());
+        return new TestimonialCollection(Testimonial::paginate());
     }
 
     /**
@@ -33,7 +33,13 @@ class TestimonialController extends Controller
      */
     public function store(storeTestimonial $request)
     {
-        //
+        $testimonial = new Testimonial;
+        $testimonial->author = $request->author;
+        $testimonial->occupation = $request->occupation;
+        $testimonial->company = $request->company;
+        $testimonial->content = $request->content;
+        $testimonial->save();
+        return new TestimonialResource($testimonial);
     }
 
     /**
@@ -54,9 +60,15 @@ class TestimonialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(storeTestimonial $request, $id)
     {
-        //
+        $testimonial = Testimonial::findOrFail($id);
+        $testimonial->author = $request->author;
+        $testimonial->occupation = $request->occupation;
+        $testimonial->company = $request->company;
+        $testimonial->content = $request->content;
+        $testimonial->save();
+        return new TestimonialResource($testimonial);
     }
 
     /**
@@ -67,17 +79,7 @@ class TestimonialController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $testimonial->delete();
     }
 
-    protected function validateData(Request $request)
-    {
-        # validates request data
-        return request()->validate([
-            'title'=>'required',
-            'website'=>'required',
-            'website'=>'required',
-            'website'=>'required'
-        ]);
-    }
 }

@@ -12,7 +12,7 @@ use App\Http\Requests\storeSkill;
 class SkillController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth')->except(['index','show']);
+        $this->middleware('auth:api')->except(['index','show']);
     }
 
     /**
@@ -22,7 +22,7 @@ class SkillController extends Controller
      */
     public function index()
     {
-        return new SkillCollection(Skill::all());
+        return new SkillCollection(Skill::paginate());
     }
 
     /**
@@ -33,7 +33,12 @@ class SkillController extends Controller
      */
     public function store(storeSkill $request)
     {
-        //
+        $skill = new Skill;
+        $skill->name = $request->name;
+        $skill->proficiency = $request->proficiency;
+        $skill->save();
+
+        return new SkillResource($skill);
     }
 
     /**
@@ -54,9 +59,12 @@ class SkillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(storeSkill $request, $id)
     {
-        //
+        Skill::findOrFail($id);
+        $skill->name = $request->name;
+        $skill->proficiency = $request->proficiency;
+        $skill->save();
     }
 
     /**
@@ -67,17 +75,7 @@ class SkillController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
-
-    protected function validateData(Request $request)
-    {
-        # validates request data
-        return request()->validate([
-            'title'=>'required',
-            'website'=>'required',
-            'website'=>'required',
-            'website'=>'required'
-        ]);
+        $skill = Skill::findOrFail($id);
+        $skill->delete();
     }
 }
