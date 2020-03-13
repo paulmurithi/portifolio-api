@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ProjectCollection extends ResourceCollection
 {
+    public $collects = 'App\Http\Resources\ProjectResource';
+
     /**
      * Transform the resource collection into an array.
      *

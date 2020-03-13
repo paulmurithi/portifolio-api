@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class TestimonialCollection extends ResourceCollection
 {
+    public $collects = 'App\Http\Resources\TestimonialResource';
+
     /**
      * Transform the resource collection into an array.
      *
