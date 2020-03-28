@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use \App\User;
+use App\Http\Requests\storeUser;
 
 class AuthController extends Controller
 {
@@ -28,5 +30,13 @@ class AuthController extends Controller
                 return response()->json('Something went wrong on the server', $e->getCode());
             }
         }
+    }
+
+    public function register(storeUser $request){
+        return User::create(
+            'name'->$request->name,
+            'email'->$request->email,
+            'passward'->Hash::make($request->password)
+        );
     }
 }
