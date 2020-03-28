@@ -39,4 +39,13 @@ class AuthController extends Controller
             'passward'->Hash::make($request->password)
         );
     }
+
+    public function logout(Request $request){
+        auth()->user()->tokens->each(function($token, $key){
+            $token->delete();
+        });
+
+        return response()->json('logged out successfully', 200);
+
+    }
 }
